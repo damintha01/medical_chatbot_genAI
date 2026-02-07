@@ -79,3 +79,4 @@ jobs:
             -e PINECONE_API_KEY=${{ secrets.PINECONE_API_KEY }} \
             -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             $IMAGE_URI
+ 
