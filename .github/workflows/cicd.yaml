@@ -64,8 +64,7 @@ jobs:
 
       - name: Stop and remove old container
         run: |
-          docker stop app || true
-          docker rm app || true
+          docker rm -f app || true
 
       - name: Run Docker Image to serve Users
         env:
