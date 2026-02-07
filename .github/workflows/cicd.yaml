@@ -8,7 +8,7 @@ jobs:
   Continuous-Integration:
     runs-on: ubuntu-latest
     outputs:
-      image_uri: ${{ steps.build-image.outputs.IMAGE_URI }}
+      image_uri: ${{ steps.build-image.outputs.image }}
 
     steps:
       - name: Checkout code
@@ -34,7 +34,7 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
   Continuous-Deployment:
     needs: Continuous-Integration
@@ -58,13 +58,11 @@ jobs:
         run: |
           docker pull ${{ needs.Continuous-Integration.outputs.image_uri }}
 
-      # 🔥 REQUIRED FIX — stop & remove old container
       - name: Stop and remove old container
         run: |
           docker stop app || true
           docker rm app || true
 
-      # ✅ Run new container safely
       - name: Run Docker Image to serve Users
         run: |
           docker run -d \
