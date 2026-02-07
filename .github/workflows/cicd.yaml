@@ -49,7 +49,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Pull Docker Image from ECR
-        env:
+        env: 
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
