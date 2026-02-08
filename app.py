@@ -1,12 +1,13 @@
 from flask import Flask, render_template, jsonify, request
 from src.helper import download_embeddings
-from langchain_pinecone import PineconeVectorStore
+from langchain_community.vectorstores import Pinecone
 from langchain_openai import OpenAI
 from langchain_classic.chains import create_retrieval_chain
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 from src.prompts import *
+from pinecone import Pinecone as PineconeClient
 import os
 
 app = Flask(__name__)
@@ -21,13 +22,17 @@ os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 embeddings = download_embeddings()
 
-
 index_name = "medicalbot"
 
-# Embed each chunk and upsert the embeddings into your Pinecone index.
-docsearch = PineconeVectorStore.from_existing_index(
-    index_name=index_name,
-    embedding=embeddings
+# Initialize Pinecone client and get index
+pc = PineconeClient(api_key=PINECONE_API_KEY)
+index = pc.Index(index_name)
+
+# Create vector store
+docsearch = Pinecone(
+    index=index,
+    embedding=embeddings,
+    text_key="text"
 )
 
 retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
