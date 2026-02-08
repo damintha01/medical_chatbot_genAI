@@ -8,7 +8,7 @@ def load_pdf_file(data):
                            glob="**/*.pdf",
                            loader_cls=PyPDFLoader)
     documents=loader.load()
-    return documents
+    return documents 
 
 
 def text_splitter(extract_data):
